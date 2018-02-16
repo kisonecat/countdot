@@ -1,5 +1,10 @@
+all: middleclass.lua stateful.lua
+
 middleclass.lua: Makefile
-	wget https://raw.githubusercontent.com/kikito/middleclass/master/middleclass.lua
+	wget -c https://raw.githubusercontent.com/kikito/middleclass/master/middleclass.lua
 
 stateful.lua: Makefile
-	wget https://raw.githubusercontent.com/kikito/stateful.lua/master/stateful.lua
+	wget -c https://raw.githubusercontent.com/kikito/stateful.lua/master/stateful.lua
+
+clean:
+	rm -f middleclass.lua stateful.lua

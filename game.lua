@@ -3,11 +3,12 @@
 Game = class('Game'):include(Stateful)
 
 require 'states/menu'
+require 'states/play'
 require 'states/pause'
 -- require 'states/game_over'
 
 function Game:initialize()
-  self:gotoState('Menu')
+  self:gotoState('Play')
 end
 
 function Game:exit()
@@ -27,4 +28,10 @@ function Game:keypressed(key, code)
 end
 
 function Game:mousepressed(x, y, button, isTouch)
+end
+
+function Game:mousereleased(x, y, button, isTouch)
+end
+
+function Game:mousemoved( x, y, dx, dy, istouch )
 end
