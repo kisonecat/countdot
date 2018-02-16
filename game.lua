@@ -5,6 +5,8 @@ Game = class('Game'):include(Stateful)
 require 'states/menu'
 require 'states/play'
 require 'states/pause'
+require 'states/choose'
+require 'states/check'
 -- require 'states/game_over'
 
 function Game:initialize()
