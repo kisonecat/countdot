@@ -10,6 +10,9 @@ local font
 
 function Play:enteredState()
    lastTime = love.timer.getTime()
+
+   Game.lhs = (dots.circle(5) - 1) * (dots.circle(5) - 1) - 1
+   Game.rhs = (dots.circle(4) * (dots.grid(3,3) + 1))
    
    width = love.graphics.getWidth( )
    font = love.graphics.newFont((width - radius) / 4 )
@@ -67,7 +70,7 @@ function Play:draw()
    -- circular( 6, grid(3,3,circular(5,dot)) )()
    -- grid(5,2,dot)()
    -- circle(5)( function() circle(4)(dot) end )
-   local card = (dots.circle(5) - 1) * (dots.circle(5) - 1) - 1
+   local card = Game.lhs
    card:render(dots.dot)
    -- circular( 5, circular( 5, grid(3,3,box) ) )()
 
@@ -85,8 +88,7 @@ function Play:draw()
    -- stack( sum( grid(2,2), circle(4) ), sum( circle(5), circle(7) ) )(dot)
    --circle(4,circle(5)) (dot)
    -- local card = circle(3) + circle(3)
-   local card = (dots.grid(3,2) * dots.circle(7)) + 1
-   local card = (dots.circle(4) * (dots.grid(3,3) + 1))
+   local card = Game.rhs
    card:render(dots.dot)
 	  
    -- Also try drawing numbers

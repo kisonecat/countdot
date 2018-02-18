@@ -3,6 +3,7 @@
 Game = class('Game'):include(Stateful)
 
 require 'states/menu'
+require 'states/title'
 require 'states/play'
 require 'states/pause'
 require 'states/choose'
@@ -10,7 +11,7 @@ require 'states/check'
 -- require 'states/game_over'
 
 function Game:initialize()
-  self:gotoState('Play')
+  self:gotoState('Title')
 end
 
 function Game:exit()
