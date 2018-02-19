@@ -23,18 +23,14 @@ function Choose:enteredState()
    lastTime = love.timer.getTime()
    Game.correct = nil
    
-   -- should also randomly choose a card
    local card = cards.pop()
    Game.rhs = card.rhs
    Game.lhs = card.lhs
 
-   Game.cardCounter = 5
+   Game.cardCounter = 10
 end
 
 function Choose:update(dt)
-  -- You should switch to another state here,
-  -- Usually when a button is pressed.
-   -- Either with gotoState() or pushState()
    Game.states.Play.update(self,dt)
    
    if directionMaximum < direction then
@@ -77,7 +73,6 @@ function Choose:update(dt)
 
    if Game.countdown then
       if Game.countdown > 1 then
-	 -- THIS IS WHERE I MOVE TO A "CHECK" STATE
 	 self:popState()
 	 self:pushState('Check')
       end

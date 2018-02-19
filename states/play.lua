@@ -15,7 +15,8 @@ function Play:enteredState()
 
    Game.score = 0
    Game.level = 1
-   Game.power = 10
+   Game.power = 100
+   Game.corrects = {}
    
    self:pushState('Choose')
 end

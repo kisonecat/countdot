@@ -27,14 +27,44 @@ function Check:enteredState()
    end
 
    if Game.correct then
+      Game.soundCorrect:rewind()            
       Game.soundCorrect:play()
-      if (Game.cardCounter > 0) then
-	 Game.power = Game.power + Game.cardCounter
-      end
-      Game.score = Game.score + math.max(100, math.floor(100*Game.cardCounter))
    else
+      Game.soundWrong:rewind()                  
       Game.soundWrong:play()
+   end   
+   
+   table.insert(Game.corrects, Game.correct)
+   while (#(Game.corrects) > 10) do
+      table.remove(Game.corrects, 1)
    end
+
+   denominator = 0
+   numerator = 0
+   for _,c in pairs(Game.corrects) do
+      denominator = denominator + 1
+      if c then
+	 numerator = numerator + 1
+      end
+   end
+   ratio = numerator / denominator
+
+   if (Game.correct) then
+      if (ratio > 0.70) then
+	 if (Game.cardCounter > 0) then
+	    Game.power = Game.power + Game.cardCounter
+	    if (Game.power > 100) then
+	       Game.power = 100
+	    end
+	 end
+      end
+
+      Game.score = Game.score + 1
+      if (ratio > 0.5) then
+	 Game.score = Game.score + math.floor(math.max(100, math.floor(100*Game.cardCounter)) * (ratio - 0.5))
+      end
+   end
+
 end
 
 function Check:update(dt)
