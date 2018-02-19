@@ -12,8 +12,8 @@ require 'states/check'
 require 'states/gameover'
 
 function Game:initialize()
-   Game.fontSans = love.graphics.newImageFont( 'fonts/sffamily-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )
-   Game.fontSerif = love.graphics.newImageFont( 'fonts/computer-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )   
+   Game.fontSans = love.graphics.newImageFont( 'fonts/sffamily-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789,.!?:;' )
+   Game.fontSerif = love.graphics.newImageFont( 'fonts/computer-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789,.!?:;' )   
    Game.soundWrong = love.audio.newSource("sounds/Downer01.wav", "static")
    Game.soundCorrect = love.audio.newSource("sounds/Coin01.wav", "static")
 
