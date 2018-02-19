@@ -17,11 +17,11 @@ function Game:initialize()
    Game.soundWrong = love.audio.newSource("sounds/Downer01.wav", "static")
    Game.soundCorrect = love.audio.newSource("sounds/Coin01.wav", "static")
 
-   Game.musicEnding = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Ending.wav")
-   Game.musicLevel1 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 1.wav")
-   Game.musicLevel2 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 2.wav")
-   Game.musicLevel3 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 3.wav")
-   Game.musicTitle = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav")
+   Game.musicEnding = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Ending.mp3")
+   Game.musicLevel1 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 1.mp3")
+   Game.musicLevel2 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 2.mp3")
+   Game.musicLevel3 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 3.mp3")
+   Game.musicTitle = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Title Screen.mp3")
    
    self:gotoState('Title')
 end
