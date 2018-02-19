@@ -43,9 +43,7 @@ function Check:enteredState()
    end   
    
    table.insert(Game.corrects, Game.correct)
-   while (#(Game.corrects) > 10) do
-      table.remove(Game.corrects, 1)
-   end
+   table.remove(Game.corrects, 1)
 
    denominator = 0
    numerator = 0
@@ -58,19 +56,15 @@ function Check:enteredState()
    Game.ratio = numerator / denominator
 
    if (Game.correct) then
-      if (Game.ratio > 0.70) then
-	 if (Game.cardCounter > 0) then
-	    Game.power = Game.power + Game.cardCounter
-	    if (Game.power > 100) then
-	       Game.power = 100
-	    end
+      if (Game.cardCounter > 0) then
+	 Game.power = Game.power + Game.cardCounter * math.pow(Game.ratio,3)
+	 if (Game.power > Game.maxPower) then
+	    Game.power = Game.maxPower
 	 end
       end
 
       Game.score = Game.score + 1
-      if (Game.ratio > 0.5) then
-	 Game.score = Game.score + math.floor(math.max(100, math.floor(100*Game.cardCounter)) * (Game.ratio - 0.5))
-      end
+      Game.score = Game.score + math.floor(math.max(100, math.floor(100*Game.cardCounter)) * math.pow(Game.ratio,2))
    end
 
 end

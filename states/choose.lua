@@ -13,6 +13,8 @@ local mouseSpeed = 2
 local radius = 100
 local lockTime = nil
 local lockDirection = nil
+local everLocked = nil
+local startTime = nil
 
 function Choose:initialize()
    cards.load()
@@ -24,11 +26,13 @@ function Choose:enteredState()
    Game.correct = nil
    Game.countdown = nil               
    Game.direction = 0
-    
+   everLocked = nil
+   startTime = love.timer.getTime()
+   
    local card = cards.pop()
    Game.rhs = card.rhs
    Game.lhs = card.lhs
-
+   
    Game.cardCounter = 10
 end
 
@@ -55,6 +59,10 @@ function Choose:update(dt)
    if math.abs(direction) > 0.15 then
       if (lockTime == nil) then
 	 lockTime = love.timer.getTime()
+	 if everLocked == nil then
+	    everLocked = true
+	    Game.power = Game.power + math.min( 0.15, math.max(0, startTime - lockTime) )
+	 end
       end
 
       if (lockDirection == nil) then
@@ -74,7 +82,7 @@ function Choose:update(dt)
    end
 
    if Game.countdown then
-      if Game.countdown > 0.7 then
+      if Game.countdown > 0.6 then
 	 self:popState()
 	 self:pushState('Check')
       end

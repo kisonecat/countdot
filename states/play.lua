@@ -21,10 +21,14 @@ function Play:enteredState()
 
    width = love.graphics.getWidth( )
 
+   Game.maxPower = 10
    Game.score = 0
    Game.level = 1
-   Game.power = 100
+   Game.power = Game.maxPower
    Game.corrects = {}
+   for i=1,8 do
+      table.insert(Game.corrects, true)
+   end
    Game.countCorrect = 0
    Game.countWrong = 0
    Game.ratio = 1
@@ -33,8 +37,7 @@ function Play:enteredState()
 end
 
 function Play:update(dt)
-   Game.power = Game.power - dt / (0.01 + math.sqrt(Game.ratio))
-
+   Game.power = Game.power - dt / (0.1 + Game.ratio)
    
    Game.cardCounter = Game.cardCounter - dt   
 
@@ -118,13 +121,13 @@ function Play:draw()
    love.graphics.print(power,width - font:getWidth(power)*s - powerWidth,0,0,s,s)
    -- draw this blinking if low on power
 
-   if Game.power < 10 then
+   if Game.power < 0.2 * Game.maxPower then
       local t = love.timer.getTime() % 1
       local c = 128 * (math.cos(t*math.pi*2) + 1)/2
       love.graphics.setColor(c,c,c,100)
    end
       
-   love.graphics.rectangle('fill', width - powerWidth, 0, powerWidth * Game.power / 100, height/20 )
+   love.graphics.rectangle('fill', width - powerWidth, 0, powerWidth * Game.power / Game.maxPower, height/20 )
    
    camera.apply()
    love.graphics.setColor(0,0,0)
