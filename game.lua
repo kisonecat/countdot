@@ -23,7 +23,7 @@ function Game:initialize()
    Game.musicLevel3 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 3.wav")
    Game.musicTitle = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav")
    
-   self:gotoState('Play')
+   self:gotoState('Title')
 end
 
 function Game:exit()

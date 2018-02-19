@@ -126,7 +126,7 @@ function Choose:mousemoved( x, y, dx, dy, istouch )
       duration = love.timer.getTime() - lastTime
 
       if love.graphics.getWidth() < love.graphics.getHeight() then
-	 direction = direction - mouseSpeed * dy / love.graphics.getHeight()
+	 direction = direction + mouseSpeed * dy / love.graphics.getHeight()
       else
 	 direction = direction - mouseSpeed * dx / love.graphics.getWidth()	 
       end
