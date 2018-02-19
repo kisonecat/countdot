@@ -26,7 +26,13 @@ function M.pop()
    local filename = string.gsub( table.remove(filenames), ".lua", "", 1 )
    circle = dots.circle
    grid = dots.grid
-   return require('cards/' .. filename)
+   local card = require('cards/' .. filename)
+
+   if math.random() < 0.5 then
+      card.rhs, card.lhs = card.lhs, card.rhs
+   end
+   
+   return card
 end
 
 return M
