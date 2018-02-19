@@ -27,12 +27,15 @@ function Play:enteredState()
    Game.corrects = {}
    Game.countCorrect = 0
    Game.countWrong = 0
-
+   Game.ratio = 1
+   
    self:pushState('Choose')
 end
 
 function Play:update(dt)
-   Game.power = Game.power - dt
+   Game.power = Game.power - dt / (0.01 + math.sqrt(Game.ratio))
+
+   
    Game.cardCounter = Game.cardCounter - dt   
 
    if Game.power < 0 then
@@ -63,6 +66,36 @@ function comma_value(amount)
     end
   end
   return formatted
+end
+
+local function drawCard(card)
+   local font = Game.fontSans
+
+   love.graphics.setColor(0,0,0)
+   
+   if Game.correct == true then
+      love.graphics.setColor(255-Game.fade,255-Game.fade,255-Game.fade)
+   end
+   
+   if Game.correct == false then
+      love.graphics.setColor(255,255-Game.fade,255-Game.fade)
+   end   
+   
+   if type(card) == "number" then
+      local s = 50 / font:getHeight()
+
+      if Game.correct == true then
+	 love.graphics.setColor(0,0,0,Game.fade)
+      end
+   
+      if Game.correct == false then
+	 love.graphics.setColor(255,0,0,Game.fade)	 
+      end         
+      
+      love.graphics.print(tostring(card),-font:getWidth(tostring(card))*s/2,-25,0,s)
+   else
+      card:render(dots.dot)      
+   end
 end
 
 function Play:draw()
@@ -104,21 +137,22 @@ function Play:draw()
    love.graphics.translate(-50,0)
    love.graphics.scale(0.82)
 
-   if Game.correct == true then
-      love.graphics.setColor(Game.fade,Game.fade,Game.fade)
-   end
+   local upFactor = 1.3
+   local downFactor = 0.7
    
-   if Game.correct == false then
-      love.graphics.setColor(255,Game.fade,Game.fade)
-   end   
+   local factor = 1.0
    
-   local card = Game.lhs
-   if type(card) == "number" then
-      local s = 50 / font:getHeight()
-      love.graphics.print(tostring(card),-font:getWidth(tostring(card))*s/2,-25,0,s)
+   if (Game.direction < 0) == Game.correct then
+      factor = upFactor
    else
-      card:render(dots.dot)      
+      factor = downFactor
    end
+
+   if Game.correct ~= nil then
+      love.graphics.scale(math.pow(factor, (255-Game.fade)/255))
+   end
+   
+   drawCard( Game.lhs )
 
    -- draw right hand card
    love.graphics.origin()
@@ -127,20 +161,18 @@ function Play:draw()
    love.graphics.scale(0.5)
    love.graphics.translate(50,0)   
    love.graphics.scale(0.82)
-   
-   local card = Game.rhs
-   if type(card) == "number" then
-      love.graphics.print(tostring(card),-font:getWidth(tostring(card))*s/2,-25,0,s)      
+
+   if (Game.direction > 0) == Game.correct then
+      factor = upFactor
    else
-      card:render(dots.dot)      
-   end
-	  
-   -- Also try drawing numbers
-   -- but should try to handle the case where the text is too tall too
-   love.graphics.origin()
-   love.graphics.translate( width - (width/4 - radius/4), height/2 )
-   love.graphics.setColor(255,0,0)
-   --love.graphics.setFont(font)
+      factor = downFactor
+   end   
+   
+   if Game.correct ~= nil then
+      love.graphics.scale(math.pow(factor, (255-Game.fade)/255))
+   end   
+   
+   drawCard( Game.rhs )
    
    -- draw inequality symbol
    love.graphics.origin()
@@ -162,11 +194,15 @@ function Play:draw()
       brightness = 255 - (255 * 1.0 / (1 + 3*math.exp(-5*Game.countdown)))
    end
 
+   love.graphics.setColor(brightness,brightness,brightness)   
+   
    if Game.correct == true then
-      brightness = (255-Game.fade) * brightness / 255
+      love.graphics.setColor(0,0,0,Game.fade)
    end
    
-   love.graphics.setColor(brightness,brightness,brightness)
+   if Game.correct == false then
+      love.graphics.setColor(255,0,0,Game.fade)
+   end   
    
    love.graphics.translate( - radius * s / 2, 0 )
    

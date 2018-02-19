@@ -5,7 +5,8 @@ local tween = require '../lib/tween'
 local camera = require 'camera'
 
 local titleText
-local subtitleText 
+local subtitleText
+local bylineText
 local tweenings
 local pulsates
 local width
@@ -54,12 +55,20 @@ function Title:enteredState()
 		    opacity=0 }
 
    subtitleText.height = titleText.height * sans:getWidth(titleText.text) /  sans:getHeight() / (sans:getWidth(subtitleText.text) / sans:getHeight())
-   
-   table.insert( tweenings, tween.new(5, subtitleText, {opacity=75}, 'outQuad') )
 
-   startButton = { x=10,
+   bylineText = { x=0,
+		  y=46 + subtitleText.height,
+		  height=subtitleText.height/2,
+		  width=100,
+		  text = "by Jim Fowler",
+		  opacity=0 }
+
+   table.insert( tweenings, tween.new(5, subtitleText, {opacity=75}, 'outQuad') )
+   table.insert( tweenings, tween.new(7, bylineText, {opacity=75}, 'outQuad') )   
+
+   startButton = { x=50-15,
 		   y=75,
-		   width=25,
+		   width=30,
 		   height=7,
 		   text = "Start",
 		   opacity=0,
@@ -85,7 +94,7 @@ function Title:enteredState()
    
    buttons = {}
    table.insert( buttons, startButton )
-   table.insert( buttons, aboutButton )
+   --table.insert( buttons, aboutButton )
    
    -- startButton.x = (width - smallFont:getWidth(startButton.text))/2
    
@@ -120,6 +129,11 @@ function Title:draw()
    love.graphics.setFont(serif)
    local s = subtitleText.height / serif:getHeight()
    love.graphics.print(subtitleText.text, subtitleText.x + subtitleText.width/2 - s*serif:getWidth(subtitleText.text)/2, subtitleText.y, 0, s, s )
+
+   love.graphics.setColor(0,0,0, bylineText.opacity)
+   love.graphics.setFont(serif)
+   local s = bylineText.height / serif:getHeight()
+   love.graphics.print(bylineText.text, bylineText.x + bylineText.width/2 - s*serif:getWidth(bylineText.text)/2, bylineText.y, 0, s, s )
 
    local button = startButton
 

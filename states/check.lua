@@ -9,8 +9,8 @@ function Check:enteredState()
    local lhs
    local rhs
 
-   Game.fade = 0
-   tweening = tween.new(0.35, Game, {fade=255}, 'outQuint')
+   Game.fade = 255
+   tweening = tween.new(0.35, Game, {fade=0}, 'outQuint')
       
    if type(Game.lhs) == "number" then
       lhs = Game.lhs
@@ -55,10 +55,10 @@ function Check:enteredState()
 	 numerator = numerator + 1
       end
    end
-   ratio = numerator / denominator
+   Game.ratio = numerator / denominator
 
    if (Game.correct) then
-      if (ratio > 0.70) then
+      if (Game.ratio > 0.70) then
 	 if (Game.cardCounter > 0) then
 	    Game.power = Game.power + Game.cardCounter
 	    if (Game.power > 100) then
@@ -68,8 +68,8 @@ function Check:enteredState()
       end
 
       Game.score = Game.score + 1
-      if (ratio > 0.5) then
-	 Game.score = Game.score + math.floor(math.max(100, math.floor(100*Game.cardCounter)) * (ratio - 0.5))
+      if (Game.ratio > 0.5) then
+	 Game.score = Game.score + math.floor(math.max(100, math.floor(100*Game.cardCounter)) * (Game.ratio - 0.5))
       end
    end
 

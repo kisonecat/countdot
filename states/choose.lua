@@ -22,7 +22,9 @@ function Choose:enteredState()
    direction = 0
    lastTime = love.timer.getTime()
    Game.correct = nil
-   
+   Game.countdown = nil               
+   Game.direction = 0
+    
    local card = cards.pop()
    Game.rhs = card.rhs
    Game.lhs = card.lhs
@@ -80,16 +82,17 @@ function Choose:update(dt)
 end
 
 function Choose:keypressed(key, code)
-   if key == 'left' then
-      direction = -0.5
-      lockTime = nil
-      Game.countdown = nil            
-   end
-   if key == 'right' then
+   if key == 'left' or key == 'down' then
       direction = 0.5
       lockTime = nil
       Game.countdown = nil            
    end
+   if key == 'right' or key == 'up' then
+      direction = -0.5
+      lockTime = nil
+      Game.countdown = nil            
+   end
+   
    if key == 'escape' then
       self:popState()
       self:pushState("GameOver")      
@@ -113,7 +116,12 @@ end
 function Choose:mousemoved( x, y, dx, dy, istouch )
    if pressed then
       duration = love.timer.getTime() - lastTime
-      direction = direction + mouseSpeed * dx / love.graphics.getWidth()
+
+      if love.graphics.getWidth() < love.graphics.getHeight() then
+	 direction = direction - mouseSpeed * dy / love.graphics.getHeight()
+      else
+	 direction = direction - mouseSpeed * dx / love.graphics.getWidth()	 
+      end
       
       lastTime = love.timer.getTime()
    end
