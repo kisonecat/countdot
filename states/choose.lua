@@ -50,7 +50,7 @@ function Choose:update(dt)
       Game.direction = direction
    end
 
-   if math.abs(direction) > 0.1 then
+   if math.abs(direction) > 0.15 then
       if (lockTime == nil) then
 	 lockTime = love.timer.getTime()
       end
@@ -72,7 +72,7 @@ function Choose:update(dt)
    end
 
    if Game.countdown then
-      if Game.countdown > 1 then
+      if Game.countdown > 0.7 then
 	 self:popState()
 	 self:pushState('Check')
       end
@@ -90,6 +90,10 @@ function Choose:keypressed(key, code)
       lockTime = nil
       Game.countdown = nil            
    end
+   if key == 'escape' then
+      self:popState()
+      self:pushState("GameOver")      
+   end   
 end
 
 function sign(x)

@@ -8,7 +8,15 @@ local radius = 15
 
 local camera = require 'camera'
 
+function Play:exitedState()
+   Game.musicLevel1:stop()
+end
+
 function Play:enteredState()
+   Game.musicLevel1:setLooping(true)
+   Game.musicLevel1:setVolume(0.22)   
+   Game.musicLevel1:play()
+   
    lastTime = love.timer.getTime()
 
    width = love.graphics.getWidth( )
@@ -17,7 +25,9 @@ function Play:enteredState()
    Game.level = 1
    Game.power = 100
    Game.corrects = {}
-   
+   Game.countCorrect = 0
+   Game.countWrong = 0
+
    self:pushState('Choose')
 end
 
@@ -31,7 +41,6 @@ function Play:update(dt)
       self:pushState("GameOver")
    end
    
-   -- check to see if game is over
 end
 
 function Play:keypressed(key, code)
@@ -94,6 +103,14 @@ function Play:draw()
    love.graphics.scale(0.5)
    love.graphics.translate(-50,0)
    love.graphics.scale(0.82)
+
+   if Game.correct == true then
+      love.graphics.setColor(Game.fade,Game.fade,Game.fade)
+   end
+   
+   if Game.correct == false then
+      love.graphics.setColor(255,Game.fade,Game.fade)
+   end   
    
    local card = Game.lhs
    if type(card) == "number" then
@@ -143,6 +160,10 @@ function Play:draw()
    
    if (Game.countdown) then
       brightness = 255 - (255 * 1.0 / (1 + 3*math.exp(-5*Game.countdown)))
+   end
+
+   if Game.correct == true then
+      brightness = (255-Game.fade) * brightness / 255
    end
    
    love.graphics.setColor(brightness,brightness,brightness)

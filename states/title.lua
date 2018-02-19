@@ -22,8 +22,14 @@ local pulsate = function ()
    return function (t, b, c, d) return c * (1 - math.cos(2 * t * math.pi / d))/2 + b end
 end
 
+function Title:exitedState()
+   Game.musicTitle:stop()
+end
+
 function Title:enteredState()
-   -- these should all be in terms of a SQUARE coordinate system!
+   Game.musicTitle:setLooping(true)
+   Game.musicTitle:setVolume(0.22)
+   Game.musicTitle:play()
 
    sans = love.graphics.newImageFont( 'fonts/sffamily-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )
    serif = love.graphics.newImageFont( 'fonts/computer-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )

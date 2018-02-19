@@ -1,11 +1,17 @@
 -- states/play.lua
 
 local Check = Game:addState('Check')
+local tween = require '../lib/tween'
+
+local tweening
 
 function Check:enteredState()
    local lhs
    local rhs
-   
+
+   Game.fade = 0
+   tweening = tween.new(0.35, Game, {fade=255}, 'outQuint')
+      
    if type(Game.lhs) == "number" then
       lhs = Game.lhs
    else
@@ -29,9 +35,11 @@ function Check:enteredState()
    if Game.correct then
       Game.soundCorrect:rewind()            
       Game.soundCorrect:play()
+      Game.countCorrect = Game.countCorrect + 1
    else
       Game.soundWrong:rewind()                  
       Game.soundWrong:play()
+      Game.countWrong = Game.countWrong + 1
    end   
    
    table.insert(Game.corrects, Game.correct)
@@ -70,8 +78,9 @@ end
 function Check:update(dt)
    Game.states.Play.update(self,dt)
 
-   -- maybe wait a bit here to fade out or whatever
-   self:popState()
-   self:pushState('Choose')   
+   if (tweening:update(dt)) then
+      self:popState()
+      self:pushState('Choose')
+   end
 end
 

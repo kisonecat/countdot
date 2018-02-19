@@ -22,7 +22,16 @@ local pulsate = function ()
    return function (t, b, c, d) return c * (1 - math.cos(2 * t * math.pi / d))/2 + b end
 end
 
+
+function GameOver:exitedState()
+   Game.musicEnding:stop()
+end
+
 function GameOver:enteredState()
+   Game.musicLevel1:stop()   
+   Game.musicEnding:setLooping(true)
+   Game.musicEnding:play()
+ 
    local sans = Game.fontSans
    
    tweenings = {}
@@ -78,10 +87,6 @@ function GameOver:enteredState()
    table.insert( buttons, startButton )
    table.insert( buttons, aboutButton )
    
-   -- startButton.x = (width - smallFont:getWidth(startButton.text))/2
-   
-   --table.insert( pulsates, tween.new(2, startButton, {color=100}, pulsate()) )
-   --table.insert( pulsates, tween.new(2, startButton, {backgroundColor=240}, pulsate()) )   
 end
 
 function GameOver:update(dt)

@@ -14,8 +14,14 @@ require 'states/gameover'
 function Game:initialize()
    Game.fontSans = love.graphics.newImageFont( 'fonts/sffamily-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )
    Game.fontSerif = love.graphics.newImageFont( 'fonts/computer-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )   
-   Game.soundWrong = love.audio.newSource("sounds/Downer01.wav")
-   Game.soundCorrect = love.audio.newSource("sounds/Coin01.wav")
+   Game.soundWrong = love.audio.newSource("sounds/Downer01.wav", "static")
+   Game.soundCorrect = love.audio.newSource("sounds/Coin01.wav", "static")
+
+   Game.musicEnding = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Ending.wav")
+   Game.musicLevel1 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 1.wav")
+   Game.musicLevel2 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 2.wav")
+   Game.musicLevel3 = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Level 3.wav")
+   Game.musicTitle = love.audio.newSource("music/Juhani Junkala [Retro Game Music Pack] Title Screen.wav")
    
    self:gotoState('Play')
 end
