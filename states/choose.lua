@@ -2,7 +2,8 @@
 
 local Choose = Game:addState('Choose')
 
-local dots = require '../dots'
+local dots = require 'dots'
+local cards = require 'cards'
 
 local direction = 0
 local directionMaximum = 0
@@ -13,20 +14,28 @@ local radius = 100
 local lockTime = nil
 local lockDirection = nil
 
+function Choose:initialize()
+   cards.load()
+end
+
 function Choose:enteredState()
    direction = 0
    lastTime = love.timer.getTime()
-
-   -- should also randomly choose a card
+   Game.correct = nil
    
-   width = love.graphics.getWidth( )
-   font = love.graphics.newFont((width - radius) / 4 )
+   -- should also randomly choose a card
+   local card = cards.pop()
+   Game.rhs = card.rhs
+   Game.lhs = card.lhs
+
+   Game.cardCounter = 5
 end
 
 function Choose:update(dt)
   -- You should switch to another state here,
   -- Usually when a button is pressed.
    -- Either with gotoState() or pushState()
+   Game.states.Play.update(self,dt)
    
    if directionMaximum < direction then
       directionMaximum = direction

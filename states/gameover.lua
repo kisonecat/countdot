@@ -1,6 +1,6 @@
 -- states/title.lua
 
-local Title = Game:addState('Title')
+local GameOver = Game:addState('GameOver')
 local tween = require '../lib/tween'
 local camera = require 'camera'
 
@@ -22,23 +22,20 @@ local pulsate = function ()
    return function (t, b, c, d) return c * (1 - math.cos(2 * t * math.pi / d))/2 + b end
 end
 
-function Title:enteredState()
-   -- these should all be in terms of a SQUARE coordinate system!
-
-   sans = love.graphics.newImageFont( 'fonts/sffamily-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )
-   serif = love.graphics.newImageFont( 'fonts/computer-modern.png', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789' )
+function GameOver:enteredState()
+   local sans = Game.fontSans
    
    tweenings = {}
    pulsates = {}   
    
    titleText = { x=0,
-		 y=23,
-		 height=22,
+		 y=35,
+		 height=17,
 		 width=100,
-		 text = "countdot",
+		 text = "GAME OVER",
 		 opacity=0 }
    
-   table.insert( tweenings, tween.new(3, titleText, {y=26}, 'outQuint') )
+   table.insert( tweenings, tween.new(3, titleText, {y=30}, 'outQuint') )
    table.insert( tweenings, tween.new(1, titleText, {opacity=255}, 'outQuint') )
 
    subtitleText = { x=0,
@@ -55,7 +52,7 @@ function Title:enteredState()
 		   y=75,
 		   width=25,
 		   height=7,
-		   text = "Start",
+		   text = "Restart",
 		   opacity=0,
 		   color=255,
 		   onclick=function()
@@ -68,11 +65,11 @@ function Title:enteredState()
 		   y=75,
 		   width=25,
 		   height=7,
-		   text = "About",
+		   text = "Menu",
 		   opacity=0,
 		   color=255,
 		   onclick=function()
-		      self:gotoState('About')		      
+		      self:gotoState('Title')		      
 		   end		   
    }
    table.insert( tweenings, tween.new(2, aboutButton, {opacity=255}, 'outQuad') )      
@@ -87,7 +84,7 @@ function Title:enteredState()
    --table.insert( pulsates, tween.new(2, startButton, {backgroundColor=240}, pulsate()) )   
 end
 
-function Title:update(dt)
+function GameOver:update(dt)
    for _,t in pairs(tweenings) do
       t:update(dt)
    end
@@ -99,21 +96,24 @@ function Title:update(dt)
    end
 end
 
-function Title:draw()
-   love.graphics.setBackgroundColor(255,255,255)
+function GameOver:draw()
+   Game.states.Play.draw(self)
+   
+   local height = love.graphics.getHeight( )
+   local width = love.graphics.getWidth( )
+
+   love.graphics.setColor(255,255,255,190)
+   love.graphics.origin()   
+   love.graphics.rectangle('fill',0,0,width,height)
 
    camera.apply()
    local scale = camera.getScale()
+   local sans = Game.fontSans
    
    love.graphics.setColor(0,0,0, titleText.opacity)   
    love.graphics.setFont(sans)
    local s = titleText.height / sans:getHeight()
    love.graphics.print(titleText.text, titleText.x + titleText.width/2 - s*sans:getWidth(titleText.text)/2, titleText.y, 0, s, s )
-
-   love.graphics.setColor(0,0,0, subtitleText.opacity)
-   love.graphics.setFont(serif)
-   local s = subtitleText.height / serif:getHeight()
-   love.graphics.print(subtitleText.text, subtitleText.x + subtitleText.width/2 - s*serif:getWidth(subtitleText.text)/2, subtitleText.y, 0, s, s )
 
    local button = startButton
 
@@ -135,7 +135,7 @@ function Title:draw()
 
 end
 
-function Title:mousepressed(x, y, button, isTouch)
+function GameOver:mousepressed(x, y, button, isTouch)
    x,y = camera.toWorld(x,y)
    
    for _,button in pairs(buttons) do
@@ -145,7 +145,7 @@ function Title:mousepressed(x, y, button, isTouch)
    end
 end
 
-function Title:mousemoved( x, y, dx, dy, istouch )
+function GameOver:mousemoved( x, y, dx, dy, istouch )
    x,y = camera.toWorld(x,y)
    
    for _,button in pairs(buttons) do
@@ -157,9 +157,3 @@ function Title:mousemoved( x, y, dx, dy, istouch )
    end
 end
 
-function Title:keypressed(key, code)
-     -- Pause game
-  if key == 'p' then
-    self:pushState('Pause')
-  end
-end

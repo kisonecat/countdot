@@ -4,23 +4,33 @@ local Play = Game:addState('Play')
 
 local dots = require '../dots'
 
-local radius = 100
+local radius = 15
 
-local font
+local camera = require 'camera'
 
 function Play:enteredState()
    lastTime = love.timer.getTime()
 
-   Game.lhs = (dots.circle(5) - 1) * (dots.circle(5) - 1) - 1
-   Game.rhs = (dots.circle(4) * (dots.grid(3,3) + 1))
-   
    width = love.graphics.getWidth( )
-   font = love.graphics.newFont((width - radius) / 4 )
 
+   Game.score = 0
+   Game.level = 1
+   Game.power = 10
+   
    self:pushState('Choose')
 end
 
 function Play:update(dt)
+   Game.power = Game.power - dt
+   Game.cardCounter = Game.cardCounter - dt   
+
+   if Game.power < 0 then
+      Game.power = 0
+      self:popState()
+      self:pushState("GameOver")
+   end
+   
+   -- check to see if game is over
 end
 
 function Play:keypressed(key, code)
@@ -34,81 +44,93 @@ function sign(x)
   return x>0 and 1 or x<0 and -1 or 0
 end
 
+function comma_value(amount)
+  local formatted = amount
+  while true do  
+    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+    if (k==0) then
+      break
+    end
+  end
+  return formatted
+end
+
 function Play:draw()
-   -- Draw your play stuff (buttons, etc.) here
    love.graphics.setBackgroundColor(255,255,255)
+   local font = Game.fontSans
+
+   local height = love.graphics.getHeight( )
+   local width = love.graphics.getWidth( )   
    
-   --love.graphics.setColor(0, 0, 51, 100)
-   --love.graphics.rectangle('fill', 350, 200, 200, 50)
-   width = love.graphics.getWidth( )
-   height = love.graphics.getHeight( )
+   love.graphics.origin()
+   love.graphics.setFont(font)
+   love.graphics.setColor(0,0,0,100)
+   
+   local s = height / 20 / font:getHeight()
+   love.graphics.print("Score " .. comma_value(Game.score),0,0,0,s,s)
+   --local level = "Level " .. tostring(Game.level)
+   --love.graphics.print(level,width/2 - font:getWidth(level)*s/2,0,0,s,s)
+   local power = "Power "
+   local powerWidth = width/10
+   love.graphics.print(power,width - font:getWidth(power)*s - powerWidth,0,0,s,s)
+   -- draw this blinking if low on power
 
-   thickness = width / 50
-
-   -- BADBAD: check to see if the scale 
-   -- and make sure that there is enough space for the HUD
-
+   if Game.power < 10 then
+      local t = love.timer.getTime() % 1
+      local c = 128 * (math.cos(t*math.pi*2) + 1)/2
+      love.graphics.setColor(c,c,c,100)
+   end
+      
+   love.graphics.rectangle('fill', width - powerWidth, 0, powerWidth * Game.power / 100, height/20 )
+   
+   camera.apply()
    love.graphics.setColor(0,0,0)
-   
+
    -- draw left hand card
    love.graphics.origin()
+   camera.apply()
+   love.graphics.translate(50,50)   
+   love.graphics.scale(0.5)
+   love.graphics.translate(-50,0)
+   love.graphics.scale(0.82)
    
-   love.graphics.translate( (width/2 - radius/2)/2, height/2 )
-   love.graphics.scale( (width/2 - radius/2) / 100 )
-   love.graphics.scale( 0.9 )
-   -- love.graphics.circle( 'fill', 0, 0, 100 )
-   -- grid( 2, 5, dot )()
-   -- grid( 3, 3, grid(2,2,box) )()
-   --love.graphics.setColor(255,0,0)
-   --dot()
-   --love.graphics.setColor(0,0,0)
-   -- grid(1,2)( function() grid(5,5)(dot) end )
-   -- compose( grid(1,2), grid(5,5) )(dot)
-   -- compose( circle(7), grid(2,1) )(dot)
-   
-   --dot()
-   -- circular( 6, grid(3,3,circular(5,dot)) )()
-   -- grid(5,2,dot)()
-   -- circle(5)( function() circle(4)(dot) end )
    local card = Game.lhs
-   card:render(dots.dot)
-   -- circular( 5, circular( 5, grid(3,3,box) ) )()
+   if type(card) == "number" then
+      local s = 50 / font:getHeight()
+      love.graphics.print(tostring(card),-font:getWidth(tostring(card))*s/2,-25,0,s)
+   else
+      card:render(dots.dot)      
+   end
 
    -- draw right hand card
    love.graphics.origin()
+   camera.apply()
+   love.graphics.translate(50,50)   
+   love.graphics.scale(0.5)
+   love.graphics.translate(50,0)   
+   love.graphics.scale(0.82)
    
-   love.graphics.translate( width - (width/4 - radius/4), height/2 )
-   love.graphics.scale( (width - radius) / 100.0 / 2 )
-   love.graphics.scale( 0.9 )
-   --circle(4, function(i) if i > 2 then return circle(5, dot) end end )()
-   -- circle(4, function(i) if i ~= 1 then circle(5, dot)() end end )()
-   --circle(4, skip(1, circle(5,dot)))()
-   -- circle(4, circle(5, skip(2)))(dot)
-   --circle(4)( circle(5) (dot) )
-   -- stack( sum( grid(2,2), circle(4) ), sum( circle(5), circle(7) ) )(dot)
-   --circle(4,circle(5)) (dot)
-   -- local card = circle(3) + circle(3)
    local card = Game.rhs
-   card:render(dots.dot)
+   if type(card) == "number" then
+      love.graphics.print(tostring(card),-font:getWidth(tostring(card))*s/2,-25,0,s)      
+   else
+      card:render(dots.dot)      
+   end
 	  
    -- Also try drawing numbers
    -- but should try to handle the case where the text is too tall too
    love.graphics.origin()
    love.graphics.translate( width - (width/4 - radius/4), height/2 )
    love.graphics.setColor(255,0,0)
-   love.graphics.setFont(font)
-
-   --if (Game.countdown) then
-   --text = tostring( math.floor(Game.countdown) )
-   --love.graphics.print(text, -font:getWidth(text)/2, -font:getHeight()/2 )
-   --end
+   --love.graphics.setFont(font)
    
    -- draw inequality symbol
    love.graphics.origin()
-
-   s = sign(Game.direction)
+   camera.apply()
+   love.graphics.translate(50,50)   
+   love.graphics.scale(0.5)
    
-   love.graphics.translate( width/2, height/2 )
+   s = sign(Game.direction)
 
    if Game.countdown then
       love.graphics.scale(  1.0 / (1 + 0.1*math.exp(-5*Game.countdown)) )
@@ -121,6 +143,7 @@ function Play:draw()
    if (Game.countdown) then
       brightness = 255 - (255 * 1.0 / (1 + 3*math.exp(-5*Game.countdown)))
    end
+   
    love.graphics.setColor(brightness,brightness,brightness)
    
    love.graphics.translate( - radius * s / 2, 0 )
@@ -130,7 +153,8 @@ function Play:draw()
    if angle > 0.5 then
       angle = 0.5
    end
-
+   
+   local thickness = 2
    lowerBound = math.asin(thickness / radius / 2)
    
    if angle > lowerBound then
