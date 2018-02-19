@@ -1,4 +1,4 @@
 return {
-   lhs = grid(10,10),
+   lhs = grid(2,2)*grid(5,5),
    rhs = 99
 }
